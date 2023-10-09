@@ -1,0 +1,2 @@
+[dependencies]
+arrayfire = "3.8.0"
