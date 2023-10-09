@@ -13,10 +13,10 @@ $$
 If now we perform a kind of Kramers-Moyal expansion on this expression like this
 
 $$
-\begin{aligned}
+\text{\begin{aligned}
 P_{{\sf t}+1}(x\vert z) &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}}(X'\vert z) P_{({\sf t}+1){\sf t}}(x\vert X',z) \\
 &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}}(X_{x'\rightarrow x}\vert z) \bigg( 1+\sum^{\infty}_{m=1}\frac{\partial^m}{\partial x^m}\big[(x-x')^mP_{({\sf t}+1){\sf t}}(x'\vert X_{x'\rightarrow x},z) \big] \bigg) ,
-\end{aligned}
+\end{aligned}}
 $$
 
 which, when truncating the expansion terms up to second order, results in the following difference equation
