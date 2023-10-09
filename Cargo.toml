@@ -1,2 +1,15 @@
+[package]
+name = "dennm"
+version = "0.0.1"
+authors = ["Robert J. Hardwick <umbralcalc@gmail.com>"]
+description = "Generalised density solver for non-Markovian stochastic phenomena."
+license = "MIT"
+keywords = ["Non-Markovian", "PDE", "Solver"]
+readme = "README.md"
+repository = "https://github.com/umbralcalc/dennm"
+documentation = "https://umbralcalc.github.io/dennm"
+edition = "2023"
+rust-version = "1.63.0"
+
 [dependencies]
 arrayfire = "3.8.0"
