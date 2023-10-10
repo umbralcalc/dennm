@@ -14,7 +14,7 @@ For now, let's imagine that $x$ is just a scalar (as opposed to a row vector) fo
 
 $$
 \begin{align}
-P_{{\sf t}+1}(x\vert z) = \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}}(X'\vert z) \bigg[ \delta (x-x') &+ \sum^{\sf t}_{{\sf t}'=0}\partial_x\delta (x-x')[\mu_1]_{{\sf t}'}(X'',z) \\
+P_{{\sf t}+1}(x\vert z) = \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}}(X'\vert z) \bigg[ \delta (x-x') &+ \sum^{{\sf t}}_{{\sf t}'=0}\partial_x\delta (x-x')[\mu_1]_{{\sf t}'}(X'',z) \\
 &+ \sum^{{\sf t}}_{{\sf t}'=0}\partial_x\delta (x-x')\sum^{{\sf t}'}_{{\sf t}''=0}\partial_{x'}\delta (x'-x'')[\mu_2]_{{\sf t}'{\sf t}''}(X'',z) \dots \bigg] ,
 \end{align}
 $$
