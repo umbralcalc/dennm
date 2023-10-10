@@ -7,9 +7,9 @@ license = "MIT"
 keywords = ["Non-Markovian", "PDE", "Solver"]
 readme = "README.md"
 repository = "https://github.com/umbralcalc/dennm"
-documentation = "https://umbralcalc.github.io/dennm"
+documentation = "https://github.com/umbralcalc/dennm"
 edition = "2023"
-rust-version = "1.63.0"
+rust-version = "1.73.0"
 
 [dependencies]
 arrayfire = "3.8.0"

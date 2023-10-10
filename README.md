@@ -10,12 +10,12 @@ P_{{\sf t}+1}(x\vert z) &= \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}+1}(X\vert
 \end{align}
 $$
 
-If now we perform a kind of Kramers-Moyal expansion on this expression like this
+For now, let's imagine that $x$ is just a scalar (as opposed to a row vector) for simplicity in the expressions. We can then write down a kind of Kramers-Moyal expansion of the equation above
 
 $$
 \begin{align}
-P_{{\sf t}+1}(x\vert z) &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}}(X'\vert z) P_{({\sf t}+1){\sf t}}(x\vert X',z) \\
-&= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}}(X_{x'\rightarrow x}\vert z) \bigg\lbrace 1+\sum_{m=1}^{\infty} \frac{\partial^m}{\partial x^m}\big[(x-x')^mP_{({\sf t}+1){\sf t}}(x'\vert X_{x'\rightarrow x},z) \big] \bigg\rbrace ,
+P_{{\sf t}+1}(x\vert z) = \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}}(X'\vert z) \bigg[ \delta (x-x') &+ \sum_{{\sf t}'=0}^{{\sf t}}\partial_x\delta (x-x')[\mu_1]_{{\sf t}'}(X'',z) \\ 
+&+ \sum_{{\sf t}'=0}^{{\sf t}}\partial_x\delta (x-x')\sum_{{\sf t}''=0}^{{\sf t}'}\partial_{x'}\delta (x'-x'')[\mu_2]_{{\sf t}'{\sf t}''}(X'',z) \dots \bigg] ,
 \end{align}
 $$
 
@@ -23,6 +23,7 @@ which, when truncating the expansion terms up to second order, results in the fo
 
 $$
 \begin{align}
-P_{{\sf t}+1}(x\vert z) - P_{{\sf t}}(x\vert z) = \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}}(X_{x'\rightarrow x}\vert z) \sum_{m=1}^{\infty}\frac{\partial^m}{\partial x^m}\big[(x-x')^mP_{({\sf t}+1){\sf t}}(x'\vert X_{x'\rightarrow x},z) \big] .
+P_{{\sf t}+1}(x\vert z) - P_{{\sf t}}(x\vert z) \simeq &-\sum_{{\sf t}'=0}^{{\sf t}}\frac{\partial}{\partial x}\bigg\lbrace P_{{\sf t}'}(X\vert z)[\mu_1]_{{\sf t}'}(X,z) \bigg\rbrace \bigg\vert_{X_{{\sf t}'}=x} \\
+&+\sum_{{\sf t}'=0}^{{\sf t}}\frac{\partial}{\partial x}\sum_{{\sf t}''=0}^{{\sf t}'}\frac{\partial}{\partial x'}\bigg\lbrace P_{{\sf t}'}(X\vert z)[\mu_2]_{{\sf t}'{\sf t}''}(X,z) \bigg\rbrace \bigg\vert_{X_{{\sf t}'}=x \,\wedge\, X_{{\sf t}''}=x'} .
 \end{align}
 $$
