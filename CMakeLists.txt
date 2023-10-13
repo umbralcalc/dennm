@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
-project(dennm)
+project(dennm-torch)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Torch REQUIRED)
 
-add_executable(main src/test_script.cpp)
+add_executable(dennm-torch src/TestScript.cpp)
 
-target_link_libraries(main ${TORCH_LIBRARIES})
+target_link_libraries(dennm-torch ${TORCH_LIBRARIES})
 
-target_include_directories(main PRIVATE ${TORCH_INCLUDE_DIRS})
+target_include_directories(dennm-torch PRIVATE ${TORCH_INCLUDE_DIRS})
