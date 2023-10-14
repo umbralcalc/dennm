@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Torch REQUIRED)
 
-add_executable(dennm-torch src/TestScript.cpp)
+add_executable(dennm-torch src/main.cpp)
 
 target_link_libraries(dennm-torch ${TORCH_LIBRARIES})
 
