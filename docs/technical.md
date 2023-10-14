@@ -32,14 +32,14 @@ P_{{\sf t}+1}(x\vert z) - P_{{\sf t}}(x\vert z) \simeq &-\sum^{{\sf t}}_{{\sf t}
 \end{aligned}
 $$
 
-Let's now discretise the derivatives and integral to make the expression more compatible with numerical computation like this
+Let's now discretise the derivatives and integral to make the expression more compatible with numerical computation like this $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal J}^i_{{\sf t}}$, where the probability current ${\cal J}^i_{{\sf t}}$ is defined as
 
 $$
 \begin{aligned}
-[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} \simeq &-\sum^{{\sf t}}_{{\sf t}'=0}\bigg\lbrace [P]^{i+1}_{{\sf t}'}[\mu_1]^{(i+1)(i+1)}_{{\sf t}'} - [P]^{i}_{{\sf t}'}[\mu_1]^{ii}_{{\sf t}'} \bigg\rbrace -\sum^{{\sf t}}_{{\sf t}'=0}\sum_{\forall i'\neq i}\bigg\lbrace [P]^{i'}_{{\sf t}'}[\mu_1]^{(i+1)i'}_{{\sf t}'} - [P]^{i'}_{{\sf t}'}[\mu_1]^{ii'}_{{\sf t}'} \bigg\rbrace\\
+{\cal J}^i_{{\sf t}} = &-\sum^{{\sf t}}_{{\sf t}'=0}\bigg\lbrace [P]^{i+1}_{{\sf t}'}[\mu_1]^{(i+1)(i+1)}_{{\sf t}'} - [P]^{i}_{{\sf t}'}[\mu_1]^{ii}_{{\sf t}'} \bigg\rbrace -\sum^{{\sf t}}_{{\sf t}'=0}\sum_{\forall i'\neq i}\bigg\lbrace [P]^{i'}_{{\sf t}'}[\mu_1]^{(i+1)i'}_{{\sf t}'} - [P]^{i'}_{{\sf t}'}[\mu_1]^{ii'}_{{\sf t}'} \bigg\rbrace\\
 &+\frac{1}{\Delta x}\sum^{{\sf t}}_{{\sf t}'=0}\sum^{{\sf t}'}_{{\sf t}''=0}\bigg\lbrace [P]^{i+1}_{{\sf t}'}[\mu_2]^{(i+1)(i+1)}_{{\sf t}'} + [P]^{i-1}_{{\sf t}'}[\mu_2]^{(i-1)(i+1)}_{{\sf t}'} - 2[P]^{i}_{{\sf t}'}[\mu_2]^{ii}_{{\sf t}'}  \bigg\rbrace\\
 &+\frac{1}{\Delta x}\sum^{{\sf t}}_{{\sf t}'=0}\sum^{{\sf t}'}_{{\sf t}''=0} \sum_{\forall i'\neq i}\bigg\lbrace [P]^{i'}_{{\sf t}'}[\mu_2]^{(i+1)i'}_{{\sf t}'} + [P]^{i'}_{{\sf t}'}[\mu_2]^{(i-1)i'}_{{\sf t}'} - 2[P]^{i'}_{{\sf t}'}[\mu_2]^{ii'}_{{\sf t}'} \bigg\rbrace .
 \end{aligned}
 $$
 
-For a stable solution of this system of equations $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal F}^i_{{\sf t}}$, it makes sense to use the [Crank-Nicolson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = ({\cal F}^i_{{\sf t}+1} + {\cal F}^i_{{\sf t}})/2$.
+For a stable solution of this system of equations, it makes sense to use the [Crank-Nicolson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = ({\cal J}^i_{{\sf t}+1} + {\cal J}^i_{{\sf t}})/2$.
