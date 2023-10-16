@@ -32,15 +32,21 @@ P_{({\sf t}+1){\sf t}}(x\vert X',z) &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf 
 \end{aligned}
 $$
 
-Let's imagine that $x$ is just a scalar (as opposed to a row vector) for simplicity in the expressions. We can then discretise the 1D space over $x$ into separate $i$-labelled regions such that $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal J}^i_{{\sf t}}$, where the probability current ${\cal J}^i_{{\sf t}}$ for the factorised processes above would be defined as
+Let's imagine that $x$ is just a scalar (as opposed to a row vector) for simplicity in the expressions. We can then discretise the 1D space over $x$ into separate $i$-labelled regions such that $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal J}^i_{{\sf t}+1}$, where the probability current ${\cal J}^i_{{\sf t}+1}$ for the factorised processes above would be defined as
 
 $$
 \begin{aligned}
-{\cal J}^i_{{\sf t}} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\Delta x\sum_{i'=0}^N[P]^{i'}_{{\sf t}'}[P]^{ii'}_{({\sf t}+1){\sf t}'} \\
-{\cal J}^i_{{\sf t}} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0}\Delta x^2\sum_{i'=0}^N\sum_{i''=0}^N[P]^{i''}_{{\sf t}''}[P]^{i'i''}_{{\sf t}'{\sf t}''}[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''}  .
+{\cal J}^i_{{\sf t}+1} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\sum_{i'=0}^N\Delta x[P]^{i'}_{{\sf t}'}[P]^{ii'}_{({\sf t}+1){\sf t}'} \\
+{\cal J}^i_{{\sf t}+1} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=1}\frac{1}{{\sf t}'-1}\sum^{{\sf t}'-1}_{{\sf t}''=0}\sum_{i'=0}^N\sum_{i''=0}^N\Delta x^2[P]^{i''}_{{\sf t}''}[P]^{i'i''}_{{\sf t}'{\sf t}''}[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''} .
 \end{aligned}
 $$
 
-The $[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''}$ tensor, in particular, will have $N^3{\sf t}({\sf t}^2-1)$ elements.
+The $[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''}$ tensor, in particular, will have $N^3{\sf t}({\sf t}^2-1)$ elements. Note that the third-order temporal correlations can be evolved by identifying the pairwise conditional probabilities as time-dependent state variables and evolving them according to the following relation
+
+$$
+\begin{aligned}
+[P]^{ii''}_{({\sf t}+1){\sf t}''} &= \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=1}\sum_{i'=0}^N\Delta x[P]^{i'i''}_{{\sf t}'{\sf t}''}[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''} .
+\end{aligned}
+$$
 
 For a stable solution of this system of equations, it makes sense to use the [Crank-Nicolson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = ({\cal J}^i_{{\sf t}+1} + {\cal J}^i_{{\sf t}})/2$.
