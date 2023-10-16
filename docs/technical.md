@@ -12,32 +12,35 @@ P_{{\sf t}+1}(x\vert z) &= \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}+1}(X\vert
 \end{aligned}
 $$
 
-For now, let's imagine that $x$ is just a scalar (as opposed to a row vector) for simplicity in the expressions. We can then write down a kind of [Kramers-Moyal expansion](https://en.wikipedia.org/wiki/Kramers%E2%80%93Moyal_expansion) of the equation above
+Without loss of generality, we can relate the latest probabilities to those from deeper into the past by chaining conditional probabilities together in a non-Markovian equivalent of the [Chapman-Kolmogorov equation](https://en.wikipedia.org/wiki/Chapman%E2%80%93Kolmogorov_equation)
 
 $$
 \begin{aligned}
-P_{{\sf t}+1}(x\vert z) = \int_{\Omega_{{\sf t}}}{\rm d}X' P_{{\sf t}}(X'\vert z) \bigg[ &\frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\delta (x-x') - \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\partial_x\delta (x-x')\mu_1 (X',z) \\
-&+ \frac{1}{2{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\partial_x\delta (x-x')\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0}\partial_{x}\delta (x-x'')\mu_2 (X',z) + \dots \bigg] ,
+P_{{\sf t}+1}(x\vert z) &= \int_{\Omega_{{\sf t}-1}}{\rm d}X''P_{{\sf t}-1}(X''\vert z)\int_{\omega_{{\sf t}}}{\rm d}^nx' P_{{\sf t}({\sf t}-1)}(x'\vert X'',z)P_{({\sf t}+1){\sf t}}(x\vert X',z) \\
+&= \int_{\Omega_{{\sf t}-2}}{\rm d}X'''P_{{\sf t}-2}(X'''\vert z)\int_{\omega_{{\sf t}-1}}{\rm d}^nx''P_{({\sf t}-1)({\sf t}-2)}(x''\vert X''',z)\int_{\omega_{{\sf t}}}{\rm d}^nx' P_{{\sf t}({\sf t}-1)}(x'\vert X'',z)P_{({\sf t}+1){\sf t}}(x\vert X',z) \\
+&= \dots \\
+&= \int_{\Omega_{{\sf t}-{\sf s}}}{\rm d}X'''P_{{\sf t}-{\sf s}}(X'''\vert z)\prod_{{\sf s}'=0}^{{\sf s}-1} \bigg\lbrace \int_{\omega_{{\sf t}-{\sf s}'}}{\rm d}^nx' P_{({\sf t}-{\sf s}')({\sf t}-{\sf s}'-1)}(x'\vert X'',z) \bigg\rbrace P_{({\sf t}+1){\sf t}}(x\vert X',z) .
 \end{aligned}
 $$
 
-where $\partial_x\delta$ denotes the formal derivative of a Dirac delta function and the $\mu_i$ terms denote the $i$-th conditional moments with respect to the distribution over $x$. Truncating the expansion up to second order and integrating each term by parts results in the following difference equation
+Depending on the temporal correlation structure of the process, the conditional probabilities can be factorised. For example, processes with second or third-order temporal correlations would be described by the following expressions
 
 $$
 \begin{aligned}
-P_{{\sf t}+1}(x\vert z) - P_{{\sf t}}(x\vert z) \simeq &-\frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\frac{\partial}{\partial x}\bigg\lbrace \int_{\Omega_{{\sf t}'}}{\rm d}X P_{{\sf t}'}(X\vert z)[\mu_1]_{{\sf t}'}(X,z) \bigg\rbrace_{X_{{\sf t}'}=x} \\
-&+\frac{1}{2{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0}\frac{\partial^2}{\partial x^2}\bigg\lbrace \int_{\Omega_{{\sf t}'}}{\rm d}X P_{{\sf t}'}(X\vert z)[\mu_2]_{{\sf t}'{\sf t}''}(X,z) \bigg\rbrace_{X_{{\sf t}'}=x \,\wedge\, X_{{\sf t}''}=x} .
+P_{({\sf t}+1){\sf t}}(x\vert X',z) &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\int_{\omega_{{\sf t}'}}{\rm d}^nx' P_{{\sf t}'}(x'\vert z)P_{({\sf t}+1){\sf t}'}(x\vert x',z) \\
+P_{({\sf t}+1){\sf t}}(x\vert X',z) &= \frac{1}{{\sf t}}\sum_{{\sf t}'=0}^{{\sf t}}\frac{1}{{\sf t}'}\sum_{{\sf t}'=0}^{{\sf t}'}\int_{\omega_{{\sf t}'}}{\rm d}^nx'\int_{\omega_{{\sf t}''}}{\rm d}^nx'' P_{{\sf t}''}(x''\vert z) P_{{\sf t}'{\sf t}''}(x'\vert x'',z)P_{({\sf t}+1){\sf t}'{\sf t}''}(x\vert x',x'',z) .
 \end{aligned}
 $$
 
-Let's now discretise the derivatives and integral to make the expression more compatible with numerical computation like this $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal J}^i_{{\sf t}}$, where the probability current ${\cal J}^i_{{\sf t}}$ is defined as
+Let's imagine that $x$ is just a scalar (as opposed to a row vector) for simplicity in the expressions. We can then discretise the 1D space over $x$ into separate $i$-labelled regions such that $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = {\cal J}^i_{{\sf t}}$, where the probability current ${\cal J}^i_{{\sf t}}$ for the factorised processes above would be defined as
 
 $$
 \begin{aligned}
-{\cal J}^i_{{\sf t}} = &-\frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\bigg\lbrace [P]^{i+1}_{{\sf t}'}[\mu_1]^{(i+1)(i+1)}_{{\sf t}'} - [P]^{i}_{{\sf t}'}[\mu_1]^{ii}_{{\sf t}'} \bigg\rbrace - \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\sum_{\forall i'\neq i}\bigg\lbrace [P]^{i'}_{{\sf t}'}[\mu_1]^{(i+1)i'}_{{\sf t}'} - [P]^{i'}_{{\sf t}'}[\mu_1]^{ii'}_{{\sf t}'} \bigg\rbrace\\
-&+\frac{1}{2{\sf t}\Delta x}\sum^{{\sf t}}_{{\sf t}'=0}\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0}\bigg\lbrace [P]^{i+1}_{{\sf t}'}[\mu_2]^{(i+1)(i+1)}_{{\sf t}'{\sf t}''} + [P]^{i-1}_{{\sf t}'}[\mu_2]^{(i-1)(i+1)}_{{\sf t}'{\sf t}''} - 2[P]^{i}_{{\sf t}'}[\mu_2]^{ii}_{{\sf t}'{\sf t}''}  \bigg\rbrace\\
-&+\frac{1}{2{\sf t}\Delta x}\sum^{{\sf t}}_{{\sf t}'=0}\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0} \sum_{\forall i'\neq i}\bigg\lbrace [P]^{i'}_{{\sf t}'}[\mu_2]^{(i+1)i'}_{{\sf t}'{\sf t}''} + [P]^{i'}_{{\sf t}'}[\mu_2]^{(i-1)i'}_{{\sf t}'{\sf t}''} - 2[P]^{i'}_{{\sf t}'}[\mu_2]^{ii'}_{{\sf t}'{\sf t}''} \bigg\rbrace .
+{\cal J}^i_{{\sf t}} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\Delta x\sum_{i'=0}^N[P]^{i'}_{{\sf t}'}[P]^{ii'}_{({\sf t}+1){\sf t}'} \\
+{\cal J}^i_{{\sf t}} &= - [P]^i_{{\sf t}} + \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=0}\frac{1}{{\sf t}'}\sum^{{\sf t}'}_{{\sf t}''=0}\Delta x^2\sum_{i'=0}^N\sum_{i''=0}^N[P]^{i''}_{{\sf t}''}[P]^{i'i''}_{{\sf t}'{\sf t}''}[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''}  .
 \end{aligned}
 $$
+
+The $[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''}$ tensor, in particular, will have $N^3{\sf t}({\sf t}^2-1)$ elements.
 
 For a stable solution of this system of equations, it makes sense to use the [Crank-Nicolson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = ({\cal J}^i_{{\sf t}+1} + {\cal J}^i_{{\sf t}})/2$.
