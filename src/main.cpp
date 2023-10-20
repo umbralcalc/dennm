@@ -1,30 +1,27 @@
 #include <torch/torch.h>
 
-struct Dimensions {
-    double spacestep;
-};
-
-struct Axes {
-    int space;
-    int time;
-};
-
 class SecondOrderProbsState {
 public:
-    SecondOrderProbsState(torch::Tensor initialProbs, Axes axesSetup) : 
-        probs(initialProbs), axes(axesSetup) {}
+    static const int SPACE_AXIS = 0;
+    static const int TIME_AXIS = 1;
 
-    void update(Dimensions dims, torch::Tensor conditionalProbs) {
-        auto numberOfTimesteps = double(probs.size(axes.time));
+    SecondOrderProbsState(torch::Tensor initialProbs, double spaceStepsize) {
+        probs = torch::ones({0, 1});
+        probs = torch::cat({probs, initialProbs}, TIME_AXIS); 
+        spaceStep = spaceStepsize;
+    }
+
+    void update(torch::Tensor conditionalProbs) {
+        auto numberOfTimesteps = double(probs.size(TIME_AXIS));
         torch::Tensor nextProbs = (
-            (dims.spacestep / numberOfTimesteps) * torch::tensordot(
+            (spaceStep / numberOfTimesteps) * torch::tensordot(
                 probs, 
                 conditionalProbs, 
-                {axes.space, axes.time}, 
-                {axes.space + 2, axes.time + 2}
+                {SPACE_AXIS, TIME_AXIS}, 
+                {SPACE_AXIS + 2, TIME_AXIS + 2}
             ) - probs
         );
-        probs = torch::cat({probs, nextProbs}, axes.time);
+        probs = torch::cat({probs, nextProbs}, TIME_AXIS);
     }
 
     torch::Tensor getProbs() const {
@@ -32,7 +29,7 @@ public:
     }
 private:
     torch::Tensor probs;
-    const Axes axes;
+    double spaceStep;
 };
 
 class ThirdOrderProbsState : public SecondOrderProbsState {
@@ -40,23 +37,27 @@ public:
     ThirdOrderProbsState(
         torch::Tensor initialProbs, 
         torch::Tensor initialConditionalProbs,
-        Axes axesSetup
-    ) : SecondOrderProbsState(initialProbs, axesSetup), 
-        conditionalProbs(initialConditionalProbs),
-        axes(axesSetup) {}
+        double spaceStepsize
+    ) : SecondOrderProbsState(initialProbs, spaceStepsize), 
+        conditionalProbs(initialConditionalProbs) {
+        spaceStep = spaceStepsize;
+    }
 
-    void update(Dimensions dims, torch::Tensor twiceConditionalProbs) {
-        SecondOrderProbsState::update(dims, conditionalProbs);
-        auto numberOfTimesteps = double(conditionalProbs.size(axes.time));
+    void update(torch::Tensor twiceConditionalProbs) {
+        SecondOrderProbsState::update(conditionalProbs);
+        auto numberOfTimesteps = double(conditionalProbs.size(SecondOrderProbsState::TIME_AXIS));
         torch::Tensor nextConditionalProbs = (
-            (dims.spacestep / numberOfTimesteps) * torch::tensordot(
+            (spaceStep / numberOfTimesteps) * torch::tensordot(
                 conditionalProbs, 
                 twiceConditionalProbs, 
-                {axes.space, axes.time}, 
-                {axes.space + 2, axes.time + 2}
+                {SecondOrderProbsState::SPACE_AXIS, SecondOrderProbsState::TIME_AXIS}, 
+                {SecondOrderProbsState::SPACE_AXIS + 2, SecondOrderProbsState::TIME_AXIS + 2}
             ) - conditionalProbs
         );
-        conditionalProbs = torch::cat({conditionalProbs, nextConditionalProbs}, axes.time);
+        conditionalProbs = torch::cat(
+            {conditionalProbs, nextConditionalProbs}, 
+            SecondOrderProbsState::TIME_AXIS
+        );
     }
 
     torch::Tensor getProbs() const {
@@ -68,20 +69,16 @@ public:
     }
 private:
     torch::Tensor conditionalProbs;
-    const Axes axes;
+    double spaceStep;
 };
 
 
 int main() {
-    Dimensions dims;
-    dims.spacestep = 1.0;
-    Axes axes;
-    axes.space = 0;
-    axes.time = 1;
+    double spaceStepsize = 1.0;
     torch::Tensor tensor = torch::rand({2, 2});
-    ThirdOrderProbsState state(tensor, tensor, axes);
+    ThirdOrderProbsState state(tensor, tensor, spaceStepsize);
     for (int i = 0; i <= 10; i++) {
-        state.update(dims, tensor);
+        state.update(tensor);
     }
     std::cout << state.getProbs() << std::endl;
     return 0;
