@@ -21,7 +21,12 @@ public:
         torch::Tensor nextProbs = (
             (config.spaceStepsize / numberOfTimesteps) * torch::tensordot(
                 probs, 
-                conditionalProbs, 
+                conditionalProbs.index(
+                    {
+                        torch::indexing::Slice(), 
+                        torch::indexing::Slice(config.timeWindowsize-numberOfTimesteps, config.timeWindowsize)
+                    }
+                ), 
                 {SPACE_AXIS, TIME_AXIS}, 
                 {SPACE_AXIS + 2, TIME_AXIS + 2}
             ) - probs

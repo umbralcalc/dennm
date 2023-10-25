@@ -16,4 +16,5 @@ public:
 
 private:
     torch::Tensor conditionalProbs;
+    StateConfig config;
 };

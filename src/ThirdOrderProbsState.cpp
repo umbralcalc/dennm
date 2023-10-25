@@ -10,19 +10,32 @@ public:
         StateConfig stateConfig
     ) : SecondOrderProbsState(initialProbs, stateConfig), 
         conditionalProbs(initialConditionalProbs) {
+        config = stateConfig;
     }
 
     void update(torch::Tensor twiceConditionalProbs) {
         SecondOrderProbsState::update(conditionalProbs);
         auto numberOfTimesteps = double(conditionalProbs.size(SecondOrderProbsState::TIME_AXIS));
-        torch::Tensor nextConditionalProbs = (
-            (config.spaceStepsize / numberOfTimesteps) * torch::tensordot(
-                conditionalProbs, 
-                twiceConditionalProbs, 
-                {SecondOrderProbsState::SPACE_AXIS, SecondOrderProbsState::TIME_AXIS}, 
-                {SecondOrderProbsState::SPACE_AXIS + 2, SecondOrderProbsState::TIME_AXIS + 2}
-            ) - conditionalProbs
-        );
+        torch::Tensor nextConditionalProbs;
+        if (numberOfTimesteps == 1) {
+            nextConditionalProbs = conditionalProbs;
+        } else {
+            nextConditionalProbs = (
+                (config.spaceStepsize / numberOfTimesteps) * torch::tensordot(
+                    conditionalProbs, 
+                    twiceConditionalProbs.index(
+                        {
+                            torch::indexing::Slice(), 
+                            torch::indexing::Slice(config.timeWindowsize-numberOfTimesteps, config.timeWindowsize),
+                            torch::indexing::Slice(),
+                            torch::indexing::Slice(config.timeWindowsize-numberOfTimesteps, config.timeWindowsize-1)
+                        }
+                    ), 
+                    {SecondOrderProbsState::SPACE_AXIS, SecondOrderProbsState::TIME_AXIS}, 
+                    {SecondOrderProbsState::SPACE_AXIS + 2, SecondOrderProbsState::TIME_AXIS + 2}
+                ) - conditionalProbs
+            );
+        }
         if (numberOfTimesteps < config.timeWindowsize) {
             conditionalProbs = torch::cat(
                 {conditionalProbs, nextConditionalProbs}, 
@@ -50,4 +63,5 @@ public:
 
 private:
     torch::Tensor conditionalProbs;
+    StateConfig config;
 };
