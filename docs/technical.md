@@ -48,5 +48,3 @@ $$
 [P]^{ii''}_{({\sf t}+1){\sf t}''} &= \frac{1}{{\sf t}}\sum^{{\sf t}}_{{\sf t}'=1}\sum_{i'=0}^N\Delta x[P]^{i'i''}_{{\sf t}'{\sf t}''}[P]^{ii'i''}_{({\sf t}+1){\sf t}'{\sf t}''} .
 \end{aligned}
 $$
-
-For a stable solution of this system of equations, it makes sense to use the [Crank-Nicolson method](https://en.wikipedia.org/wiki/Crank%E2%80%93Nicolson_method) $[P]^i_{{\sf t}+1} - [P]^i_{{\sf t}} = ({\cal J}^i_{{\sf t}+1} + {\cal J}^i_{{\sf t}})/2$.
