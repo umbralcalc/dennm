@@ -1,60 +1,51 @@
 // SecondOrderProbsState.cpp
 #include "SecondOrderProbsState.h"
 
-class SecondOrderProbsState {
-public:
-    static const int SPACE_AXIS = 0;
-    static const int TIME_AXIS = 1;
+SecondOrderProbsState::SecondOrderProbsState(
+    torch::Tensor initialProbs, 
+    StateConfig stateConfig
+) {
+    probs = torch::ones({initialProbs.size(0), 0});
+    probs = torch::cat({probs, initialProbs}, TIME_AXIS); 
+    config = stateConfig;
+    currentTimestep = 0;
+}
 
-    SecondOrderProbsState(
-        torch::Tensor initialProbs, 
-        StateConfig stateConfig
-    ) {
-        probs = torch::ones({0, 1});
-        probs = torch::cat({probs, initialProbs}, TIME_AXIS); 
-        config = stateConfig;
-        currentTimestep = 0;
-    }
-
-    void update(torch::Tensor conditionalProbs) {
-        auto numberOfTimesteps = double(probs.size(TIME_AXIS));
-        torch::Tensor nextProbs = (
-            (config.spaceStepsize / numberOfTimesteps) * torch::tensordot(
-                probs, 
-                conditionalProbs.index(
-                    {
-                        torch::indexing::Slice(), 
-                        torch::indexing::Slice(config.timeWindowsize-numberOfTimesteps, config.timeWindowsize)
-                    }
-                ), 
-                {SPACE_AXIS, TIME_AXIS}, 
-                {SPACE_AXIS + 2, TIME_AXIS + 2}
-            ) - probs
-        );
-        if (numberOfTimesteps < config.timeWindowsize) {
-            probs = torch::cat({probs, nextProbs}, TIME_AXIS);
-        } else {
-            probs = torch::cat(
+void SecondOrderProbsState::update(torch::Tensor conditionalProbs) {
+    auto numberOfTimesteps = probs.size(TIME_AXIS);
+    torch::Tensor nextProbs = (
+        (config.spaceStepsize / double(numberOfTimesteps)) * torch::tensordot(
+            probs, 
+            conditionalProbs.index(
                 {
-                    probs.index({torch::indexing::Slice(), torch::indexing::Slice(1, config.timeWindowsize)}), 
-                    nextProbs
-                }, 
-                TIME_AXIS
-            );
-        }
-        currentTimestep++;
+                    torch::indexing::Slice(),
+                    torch::indexing::Slice(),
+                    torch::indexing::Slice(), 
+                    torch::indexing::Slice(config.timeWindowsize-numberOfTimesteps, config.timeWindowsize)
+                }
+            ), 
+            {SPACE_AXIS, TIME_AXIS}, 
+            {SPACE_AXIS + 2, TIME_AXIS + 2}
+        )
+    );
+    if (numberOfTimesteps < config.timeWindowsize) {
+        probs = torch::cat({probs, nextProbs}, TIME_AXIS);
+    } else {
+        probs = torch::cat(
+            {
+                probs.index({torch::indexing::Slice(), torch::indexing::Slice(1, config.timeWindowsize)}), 
+                nextProbs
+            }, 
+            TIME_AXIS
+        );
     }
+    currentTimestep++;
+}
 
-    torch::Tensor getProbs() const {
-        return probs;
-    }
+torch::Tensor SecondOrderProbsState::getProbs() const {
+    return probs;
+}
 
-    int getCurrentTimestep() const {
-        return currentTimestep;
-    }
-
-private:
-    int currentTimestep;
-    torch::Tensor probs;
-    StateConfig config;
-};
+int SecondOrderProbsState::getCurrentTimestep() const {
+    return currentTimestep;
+}
