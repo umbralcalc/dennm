@@ -4,7 +4,7 @@ geometry: margin=2cm
 
 # `dennm-torch`: (DEN)sity of (N)on-(M)arkovian phenomena with Libtorch
 
-The computational framework for `dennm-torch` is derived using the formalism from the publicly-available book: [Diffusing Ideas](https://umbralcalc.github.io/diffusing-ideas/). Let's begin by writing the generalised non-Markovian master equation for stochastic phenomena which was given in [this chapter](https://umbralcalc.github.io/diffusing-ideas/empirical_probabilistic_reweighting/chapter.pdf) of the book
+The computational framework for `dennm-torch` is derived using the formalism from the publicly-available book: [Worlds Of Observation](https://umbralcalc.github.io/worlds-of-observation/). Let's begin by writing the generalised non-Markovian master equation for stochastic phenomena which was given in [this chapter](https://umbralcalc.github.io/worlds-of-observation/numerical_time_evolution_of_probabilities/chapter.pdf) of the book
 
 $$
 \begin{aligned}
